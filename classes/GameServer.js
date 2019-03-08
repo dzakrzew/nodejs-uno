@@ -89,6 +89,14 @@ class GameServer {
     handleMessage(token, connection, msg) {
         switch(msg.action) {
             case 'join':
+                if (msg.nick.match(/^[A-Za-z0-9]+$/) == null) {
+                    this.sendMessage(connection, {
+                        title: 'join-error',
+                        message: 'INVALID-NICK'
+                    });
+                    break;
+                }
+
                 let player = new Player(connection, token, msg.nick);
                 this.rooms.playerJoin(msg.room, player)
                 break;
@@ -102,6 +110,10 @@ class GameServer {
         this.rooms.playerLeft(token);
 
         delete this.clients[token];
+    }
+
+    sendMessage(connection, message) {
+        connection.sendUTF(JSON.stringify(message));
     }
 }
 

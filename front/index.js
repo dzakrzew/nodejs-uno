@@ -73,7 +73,8 @@ function unoHandleMessage(message) {
 
 var joinErrors = {
     'NICK-ALREADY-USED': 'Nazwa użytkownika jest już zajęta',
-    'TOKEN-ALREADY-USED': 'Nastąpiła kolizja sesji. Odśwież stronę'
+    'TOKEN-ALREADY-USED': 'Nastąpiła kolizja sesji. Odśwież stronę',
+    'INVALID-NICK': 'Nazwa użytkownika musi składać się z liter lub cyfr'
 }
 
 function unoShowJoinError(message) {
@@ -115,7 +116,7 @@ function unoGameUpdatePlayers() {
 function unoBindEvents() {
     $('*[data-page="start"] input').on('change keydown keyup keypress', function() {
         $('#start-alert').fadeOut();
-        
+
         var nick = $('#start-nick').val();
         var roomId = $('#start-room-id').val();
 
