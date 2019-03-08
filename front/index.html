@@ -6,9 +6,61 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div id="game"></div>
+        <noscript>Twoja przeglądarka nie obsługuje JavaScript.</noscript>
+        <div class="container">
+            <div id="game" class="mt-4">
+                <div data-page="loading">
+                    <h2>Ładowanie...</h2>
+                </div>
+                <div data-page="start">
+                    <div class="alert alert-danger" id="start-alert"></div>
+                    <div class="form-group">
+                        <label>Podaj swój nick</label>
+                        <input type="text" class="form-control" id="start-nick">
+                    </div>
+                    <div class="form-group">
+                        <label>Podaj numer pokoju</label>
+                        <input type="number" class="form-control" id="start-room-id">
+                    </div>
+                    <button role="button" class="btn btn-primary" id="start-connect" disabled>Połącz</button>
+                </div>
+                <div data-page="no-connection">
+                    <div class="alert alert-danger">
+                        Wystąpił błąd połączenia z serwerem gry.
+                    </div>
+                </div>
+                <div data-page="game">
+                    <div class="row">
+                        <div class="col-12">
+                            <h3>Grasz w pokoju nr <span id="game-room-id"></span></h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="card card-level-top">
+                                <div class="card-body">
+                                    <div id="game-window"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <ul id="game-players"></ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div id="game-chat">
+                                <ul></ul>
+                            </div>
+                            <input type="text" maxlength="100" class="form-control mt-2" placeholder="Wpisz wiadomość" id="game-chat-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
         <script src="index.js"></script>
     </body>
 </html>
