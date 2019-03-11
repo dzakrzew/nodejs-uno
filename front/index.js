@@ -28,7 +28,8 @@ var $game = $('#game');
 var joinErrors = {
     'NICK-ALREADY-USED': 'Nazwa użytkownika jest już zajęta',
     'TOKEN-ALREADY-USED': 'Nastąpiła kolizja sesji. Odśwież stronę',
-    'INVALID-NICK': 'Nazwa użytkownika musi składać się z liter lub cyfr'
+    'INVALID-NICK': 'Nazwa użytkownika musi składać się z liter lub cyfr',
+    'ROOM-FULL': 'Nie ma już wolnych miejsc w tym pokoju'
 };
 var players = [];
 var currentNick;
@@ -185,11 +186,21 @@ function unoGameUpdateCards(cards, append = false) {
     if (!append) {
         $('#game-cards').html('');
     }
+
+    var currentCardColor = $('.game-state-window[data-game-state="PLAYING"]').attr('data-game-window-color');
+    var currentCardName = $('#game-current-card').text();
+
     for (var i = 0; i < cards.length; i++) {
         var cardColor = cards[i].split(':')[0];
         var cardName = cards[i].split(':')[1];
 
-        $('#game-cards').append('<div class="game-card" data-card-color="' + cardColor + '">' + cardName  + '</div>');
+        var $newCard = $('<div class="game-card" data-card-color="' + cardColor + '">' + cardName  + '</div>');
+
+        if (currentCardColor != cardColor && currentCardName != cardName) {
+            $newCard.addClass('game-card-disabled');
+        }
+
+        $('#game-cards').append($newCard);
     }
 }
 

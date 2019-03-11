@@ -32,7 +32,8 @@ class Room {
             this.cardsStack.push(colors[i] + ':' + '0');
 
             // number cards (two per each number greater than zero)
-            for (let j = 0; j <= 9; j++) {
+            for (let j = 1; j <= 9; j++) {
+                this.cardsStack.push(colors[i] + ':' + j);
                 this.cardsStack.push(colors[i] + ':' + j);
             }
         }
@@ -149,11 +150,23 @@ class Room {
 
     updateTurn(moveStep = 0, drawCards = 0) {
         if (drawCards > 0) {
-            let skippedPlayer = this.players[(this.currentPlayerIndex + 1) % this.players.length];
+            let calcSkippedIndex = (this.currentPlayerIndex + this.currentDirection) % this.players.length;
+
+            if (calcSkippedIndex < 0) {
+                calcSkippedIndex = this.players.length + calcSkippedIndex;
+            }
+
+            let skippedPlayer = this.players[calcSkippedIndex];
             skippedPlayer.addCards(this.getRandomCardsSet(drawCards));
         }
 
-        this.currentPlayerIndex = (this.currentPlayerIndex + moveStep) % this.players.length;
+        let calcNextIndex = (this.currentPlayerIndex + (this.currentDirection * moveStep)) % this.players.length;
+
+        if (calcNextIndex < 0) {
+            calcNextIndex = this.players.length + calcNextIndex;
+        }
+
+        this.currentPlayerIndex = calcNextIndex;
 
         this.sendMessageToAll({
             title: 'change-turn',
@@ -180,6 +193,12 @@ class Room {
             // +2
             else if (cardName == '+2') {
                 this.updateTurn(2, 2);
+            }
+
+            // reverse
+            else if (cardName == 'R') {
+                this.currentDirection *= -1;
+                this.updateTurn(1);
             }
 
             // +4

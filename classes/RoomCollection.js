@@ -22,6 +22,12 @@ class RoomCollection {
                 message: 'TOKEN-ALREADY-USED'
             });
         }
+        else if (this.rooms[roomId].players.length == 20) {
+            player.sendMessage({
+                title: 'join-error',
+                message: 'ROOM-FULL'
+            });
+        }
         else {
             this.rooms[roomId].playerJoin(player);
         }
