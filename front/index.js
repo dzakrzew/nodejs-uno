@@ -196,7 +196,7 @@ function unoGameUpdateCards(cards, append = false) {
 
         var $newCard = $('<div class="game-card" data-card-color="' + cardColor + '">' + cardName  + '</div>');
 
-        if (currentCardColor != cardColor && currentCardName != cardName) {
+        if (currentCardColor != cardColor && currentCardName != cardName && cardColor != 's') {
             $newCard.addClass('game-card-disabled');
         }
 
