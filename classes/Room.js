@@ -210,6 +210,9 @@ class Room {
                 this.updateTurn(1);
             }
 
+            // throw back used card to main card's stack
+            this.cardsStack.push(this.currentCard);
+
             if (cardColor == 's') {
                 this.setCurrentCard(changeColor + ':*');
             }

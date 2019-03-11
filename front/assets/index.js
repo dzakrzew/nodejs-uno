@@ -166,7 +166,7 @@ function unoChatMessageNew(nick, text) {
     var chatMessageLi = '<li class="msg"><span class="ts">' + ts + '</span><span class="n">' + escapeHtml(nick) + '</span><span class="t">' + escapeHtml(text) + '</span></li>';
     
     $('#game-chat > ul').append(chatMessageLi);
-    $('#game-chat').scrollTop($('#game-chat').innerHeight());
+    $('#game-chat').scrollTop($('#game-chat').prop('scrollHeight'));
 }
 
 function unoChatNotification(text) {
@@ -174,7 +174,7 @@ function unoChatNotification(text) {
     var chatNotifyLi = '<li class="notify"><span class="ts">' + ts + '</span><span class="t">' + escapeHtml(text) + '</span></li>';
     
     $('#game-chat > ul').append(chatNotifyLi);
-    $('#game-chat').scrollTop($('#game-chat').innerHeight());
+    $('#game-chat').scrollTop($('#game-chat').prop('scrollHeight'));
 }
 
 function unoPageShow(page) {
