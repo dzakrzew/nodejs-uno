@@ -1,6 +1,6 @@
 window.WebSocket = window.WebSocket || window.MozWebSocket;
 
-var connection = new WebSocket('ws://127.0.0.1:1337/?token=T' + Math.round(Math.random()*10**10));
+var connection = new WebSocket('ws://localhost:1337/?token=T' + Math.round(Math.random()*10**10));
 
 connection.onopen = function() {
     console.info('Connection opened');
@@ -24,11 +24,15 @@ connection.onmessage = function(message) {
     }
 }
 
-function sendMessage(data) {
-    connection.send(JSON.stringify(data));
-}
-
 var $game = $('#game');
+var joinErrors = {
+    'NICK-ALREADY-USED': 'Nazwa użytkownika jest już zajęta',
+    'TOKEN-ALREADY-USED': 'Nastąpiła kolizja sesji. Odśwież stronę',
+    'INVALID-NICK': 'Nazwa użytkownika musi składać się z liter lub cyfr'
+};
+var players = [];
+var currentNick;
+var currentGameState; // WAITING, PLAYING, ENDED
 
 function escapeHtml(unsafe) {
     return unsafe
@@ -37,15 +41,29 @@ function escapeHtml(unsafe) {
          .replace(/>/g, "&gt;")
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
- }
+}
 
+function sendMessage(data) {
+    connection.send(JSON.stringify(data));
+}
+
+// handling received messages
 function unoHandleMessage(message) {
     if (message.title == 'join-ok') {
-        $('#game-room-id').text(message.roomId)
+        currentNick = message.nick;
+
+        $('#game-room-id').text(message.roomId);
         unoPageShow('game');
 
         players = message.players;
         unoGameUpdatePlayers();
+
+        unoSetTurn(message.currentTurnPlayerId, message.currentTurnPlayerNick);
+        unoGameUpdateCards(message.cards);
+        unoSetCurrentCard(message.currentCard);
+        
+        $('.game-state-window').hide();
+        $('.game-state-window[data-game-state="' + message.gameState + '"]').show();
     }
 
     if (message.title == 'player-joined') {
@@ -69,12 +87,72 @@ function unoHandleMessage(message) {
     if (message.title == 'join-error') {
         unoShowJoinError(message.message);
     }
+
+    if (message.title == 'add-cards') {
+        unoGameUpdateCards(message.cards, true);
+    }
+
+    if (message.title == 'set-current-card') {
+        unoSetCurrentCard(message.card);
+    }
+
+    if (message.title == 'change-turn') {
+        unoSetTurn(message.playerId, message.playerNick);
+    }
+
+    if (message.title == 'update-players-cards-count') {
+        for (var i = 0; i < Object.keys(message.cardsCount).length; i++) {
+            var currNick = Object.keys(message.cardsCount)[i];
+
+            $('*[data-game-player-count-nick="' + currNick + '"]').text(message.cardsCount[currNick]);
+        }
+    }
+
+    if (message.title == 'update-game-state') {
+        $('.game-state-window').hide();
+        $('.game-state-window[data-game-state="' + message.gameState + '"]').show();
+
+        if (message.gameState == 'WAITING') {
+            unoGameUpdateCards([]);
+        }
+
+        if (message.gameState == 'PLAYING') {
+            unoGameUpdateCards(message.cards);
+        }
+
+        if (message.gameState == 'ENDED') {
+            unoGameUpdateCards([]);
+            $('#game-winner').text(message.winnerNick);
+        }
+    }
 }
 
-var joinErrors = {
-    'NICK-ALREADY-USED': 'Nazwa użytkownika jest już zajęta',
-    'TOKEN-ALREADY-USED': 'Nastąpiła kolizja sesji. Odśwież stronę',
-    'INVALID-NICK': 'Nazwa użytkownika musi składać się z liter lub cyfr'
+function unoSetTurn(playerId, playerNick) {
+    $('#game-cards').addClass('turn-disable');
+
+    if (playerNick == currentNick) {
+        $('#game-cards').removeClass('turn-disable');
+    }
+
+    $('#game-current-player').text(playerNick);
+}
+
+function unoSetCurrentCard(card) {
+    var cardColor = card.split(':')[0];
+    var cardName = card.split(':')[1];
+
+    $('.game-card').removeClass('game-card-disabled');
+    $('.game-card').each(function() {
+        var thisCardColor = $(this).attr('data-card-color');
+        var thisCardName = $(this).text();
+
+        if (cardColor != thisCardColor && cardName != thisCardName && thisCardColor != 's') {
+            $(this).addClass('game-card-disabled');
+        }
+    });
+
+    $('.game-state-window[data-game-state="PLAYING"]').attr('data-game-window-color', cardColor);
+    $('#game-current-card').text(cardName);
 }
 
 function unoShowJoinError(message) {
@@ -103,17 +181,100 @@ function unoPageShow(page) {
     $('*[data-page="' + page + '"]').show();
 }
 
-var players = [];
+function unoGameUpdateCards(cards, append = false) {
+    if (!append) {
+        $('#game-cards').html('');
+    }
+    for (var i = 0; i < cards.length; i++) {
+        var cardColor = cards[i].split(':')[0];
+        var cardName = cards[i].split(':')[1];
+
+        $('#game-cards').append('<div class="game-card" data-card-color="' + cardColor + '">' + cardName  + '</div>');
+    }
+}
 
 function unoGameUpdatePlayers() {
     $('#game-players').html('');
     
     for (var i = 0; i < players.length; i++) {
-        $('#game-players').append('<li><span class="n">' + players[i] + '</span><span class="c" data-game-player-count-nick="' + players[i] + '">0</span></li>');
+        $('#game-players').append('<li data-player-nick="' + players[i] + '"><span class="n">' + players[i] + '</span><span class="c" data-game-player-count-nick="' + players[i] + '">0</span></li>');
+    }
+
+    unoGameUpdateOpButtons();
+}
+
+function unoGameUpdateOpButtons() {
+    var op = $('#game-players li').first().attr('data-player-nick');
+    
+    if (currentNick == op) {
+        $('#game-op-buttons').show();
+    } else {
+        $('#game-op-buttons').hide();
     }
 }
 
+function unoThrowCardEffect(cardEl) {
+	var startTop = cardEl.offset().top;
+	var startLeft = cardEl.offset().left;
+	var targetTop = $('#game-window').offset().top + ($('#game-window').height() / 2);
+	var targetLeft = $('#game-window').offset().left + ($('#game-window').width() / 2);
+
+	cardEl.css({position: 'fixed', top: startTop, left: startLeft, 'z-index': 999, opacity: 1})
+		.animate({top: targetTop, left: targetLeft, opacity: 0.1}, 'slow', function() { $(this).remove(); });
+}
+
+// bind events
 function unoBindEvents() {
+    $.contextMenu({
+        selector: '#game-cards:not(.turn-disable) .game-card[data-card-color="s"]:not(.game-card-disabled)',
+        callback: function(key, options) {
+            var thisCardName = $(this).text();
+
+            sendMessage({
+                action: 'play-card',
+                card: 's:' + thisCardName,
+                changeColor: key
+            });
+
+            unoThrowCardEffect($(this));
+        },
+        trigger: 'left',
+        items: {
+            r: {name: 'Czerwony', className: 'context-card-r'},
+            g: {name: 'Zielony', className: 'context-card-g'},
+            b: {name: 'Niebieski', className: 'context-card-b'},
+            y: {name: 'Żółty', className: 'context-card-y'},
+        }
+    })
+
+    $('*[data-page="game"]').on('click', '#game-cards:not(.turn-disable) .game-card:not(.game-card-disabled):not([data-card-color="s"])', function() {
+        var card = $(this).attr('data-card-color') + ':' + $(this).text();
+        console.log(card);
+        sendMessage({
+            action: 'play-card',
+            card: card
+        });
+
+        unoThrowCardEffect($(this));
+    });
+
+    $('button#game-draw-card').click(function(e) {
+        e.preventDefault();
+
+        sendMessage({
+            action: 'draw-card'
+        });
+    });
+
+    $('button[data-op-button]').click(function() {
+        var action = $(this).attr('data-op-button');
+
+        sendMessage({
+            action: 'op-action',
+            opAction: action
+        });
+    })
+
     $('*[data-page="start"] input').on('change keydown keyup keypress', function() {
         $('#start-alert').fadeOut();
 
@@ -151,8 +312,6 @@ function unoBindEvents() {
 }
 
 function unoInit() {
-    localStorage.clear();
-
     unoPageShow('start');
     unoBindEvents();
 }

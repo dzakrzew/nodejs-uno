@@ -71,8 +71,10 @@
     padding: 0 5px;
 }
 
-#game-window {
-    height: 100%;
+#game-players > li:first-child > span.n:after {
+    color: #999;
+    content: ' (OP)';
+    font-size: 12px;
 }
 
 .card.card-level-top {
@@ -87,4 +89,122 @@
 .form-control {
     border: 2px solid #ddd;
     border-radius: 0;
+}
+
+.game-card {
+    border: 2px solid #ddd;
+    background: #999;
+    display: inline-block;
+    width: 50px;
+    height: 75px;
+    line-height: 75px;
+    text-align: center;
+    font-size: 24px;
+    color: #eee;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.game-card:hover {
+    box-shadow: 0 0 5px #aaa;
+}
+
+.turn-disable .game-card, .game-card.game-card-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.game-card[data-card-color="r"] {
+    background: red;
+}
+
+.game-card[data-card-color="b"] {
+    background: blue;
+}
+
+.game-card[data-card-color="g"] {
+    background: green;
+}
+
+.game-card[data-card-color="y"] {
+    background: #c48913;
+}
+
+.game-card[data-card-color="s"] {
+    background: black;
+}
+
+.context-card-r {
+    color: red;
+}
+
+.context-card-g {
+    color: green;
+}
+
+.context-card-b {
+    color: blue;
+}
+
+.context-card-y {
+    color: #c48913;
+}
+
+#game-window {
+    height: 100%;
+}
+
+.game-state-window {
+    height: 100%;
+    display: none;
+    border: 2px solid #ddd;
+    padding: 10px;
+}
+
+.game-state-window[data-game-state="WAITING"] {
+    text-align: center;
+    background: #aaa;
+    color: white;
+}
+
+.game-state-window[data-game-state="PLAYING"] {
+    color: white;
+    text-align: center;
+}
+
+.game-state-window[data-game-state="PLAYING"] p {
+    margin: 0;
+}
+
+#game-current-card {
+    font-size: 15vh;
+}
+
+#game-op-buttons {
+    display: none;
+}
+
+#game-current-player {
+    font-weight: 700;
+}
+
+.game-state-window[data-game-state="PLAYING"][data-game-window-color="r"] {
+    background: red;
+}
+
+.game-state-window[data-game-state="PLAYING"][data-game-window-color="g"] {
+    background: green;
+}
+
+.game-state-window[data-game-state="PLAYING"][data-game-window-color="b"] {
+    background: blue;
+}
+
+.game-state-window[data-game-state="PLAYING"][data-game-window-color="y"] {
+    background: #c48913;
+}
+
+.game-state-window[data-game-state="PLAYING"][data-game-window-color="s"] {
+    background: black;
 }

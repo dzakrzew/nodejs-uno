@@ -3,17 +3,20 @@
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="jquery.contextMenu.min.css">
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <noscript>Twoja przeglądarka nie obsługuje JavaScript.</noscript>
-        <div class="container">
+        <div class="container-fluid">
             <div id="game" class="mt-4">
                 <div data-page="loading">
                     <h2>Ładowanie...</h2>
                 </div>
                 <div data-page="start">
                     <div class="alert alert-danger" id="start-alert"></div>
+                    <h3>Dołącz do gry w Uno!</h3>
+                    <p>Aby kontynuować, musisz podać swój nick oraz wybrać pokój.</p>
                     <div class="form-group">
                         <label>Podaj swój nick</label>
                         <input type="text" class="form-control" id="start-nick">
@@ -26,25 +29,50 @@
                 </div>
                 <div data-page="no-connection">
                     <div class="alert alert-danger">
-                        Wystąpił błąd połączenia z serwerem gry.
+                        Wystąpił błąd połączenia z serwerem gry. <a href="javascript:window.location.reload()">Spróbuj ponownie</a>
                     </div>
                 </div>
                 <div data-page="game">
                     <div class="row">
-                        <div class="col-12">
-                            <h3>Grasz w pokoju nr <span id="game-room-id"></span></h3>
+                        <div class="col-3 text-left">
+                            <p>Twoje karty:</p>
+                        </div>
+                        <div class="col-6 text-center">
+                            <p>Grasz w pokoju numer <span id="game-room-id"></span></p>
+                        </div>
+                        <div class="col-3 text-right">
+                            <p>Lista graczy:</p>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-9">
-                            <div class="card card-level-top">
-                                <div class="card-body">
-                                    <div id="game-window"></div>
+                        <div class="col-3">
+                            <div id="game-cards">
+                                <div class="game-card" data-card-color="r">2</div>
+                            </div>
+                            <button role="button" id="game-draw-card" class="btn btn-primary">Ciągnij kartę</button>
+                        </div>
+                        <div class="col-6">
+                            <div id="game-window" class="card-level-top">
+                                <div class="game-state-window" data-game-state="WAITING">
+                                    <p>Trwa oczekiwanie na graczy i rozpoczęcie rundy przez OP-a.</p>
+                                </div>
+                                <div class="game-state-window" data-game-state="ENDED">
+                                    <h3>Gra zakończona!</h3>
+                                    <p>Zwyciężył <span id="game-winner"></span></p>
+                                </div>
+                                <div class="game-state-window" data-game-state="PLAYING" data-game-window-color="s">
+                                    <p>Obecna karta:</p>
+                                    <div id="game-current-card">?</div>
+                                    <p>Kolej: <span id="game-current-player">?</span></p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-3">
                             <ul id="game-players"></ul>
+                            <div id="game-op-buttons">
+                                <button role="button" id="game-op-button-restart" class="btn btn-primary" data-op-button="start">Start</button>
+                                <button role="button" id="game-op-button-restart" class="btn btn-primary" data-op-button="stop">Stop</button>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -61,6 +89,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+        <script src="jquery.contextMenu.min.js"></script>
         <script src="index.js"></script>
     </body>
 </html>

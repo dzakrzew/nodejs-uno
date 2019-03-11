@@ -42,6 +42,30 @@ class RoomCollection {
             }
         }
     }
+
+    playCard(token, card, changeColor) {
+        for (let roomId in this.rooms) {
+            if (this.rooms[roomId].hasPlayerWithToken(token)) {
+                this.rooms[roomId].playCard(token, card, changeColor);
+            }
+        }
+    }
+
+    opAction(token, action) {
+        for (let roomId in this.rooms) {
+            if (this.rooms[roomId].hasPlayerWithToken(token)) {
+                this.rooms[roomId].opAction(token, action);
+            }
+        }
+    }
+
+    drawCard(token) {
+        for (let roomId in this.rooms) {
+            if (this.rooms[roomId].hasPlayerWithToken(token)) {
+                this.rooms[roomId].drawCard(token);
+            }
+        }
+    }
 }
 
 module.exports = RoomCollection;
