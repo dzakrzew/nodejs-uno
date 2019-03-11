@@ -229,8 +229,6 @@ class Room {
     }
 
     playerJoin(player) {
-        console.log('User token=' + player.token + ' joined to room=' + this.id)
-
         this.sendMessageToAll({
             title: 'player-joined',
             nick: player.nick
@@ -328,7 +326,6 @@ class Room {
     chatSend(token, text) {
         let senderPlayer = this.getPlayerWithToken(token);
 
-        console.log('New message from ' + senderPlayer.nick);
         this.sendMessageToAll({
             title: 'chat-message',
             nick: senderPlayer.nick,
