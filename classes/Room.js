@@ -183,6 +183,7 @@ class Room {
             let cardColor = card.split(':')[0];
             let cardName = card.split(':')[1];
 
+            actionPlayer.hasDrawn = false;
             actionPlayer.cards.splice(cardIndex, 1);
 
             // skip
@@ -305,7 +306,7 @@ class Room {
     drawCard(token) {
         let player = this.getPlayerWithToken(token);
 
-        if (this.gameState != 'PLAYING' || player.hasDrawn) {
+        if (this.gameState != 'PLAYING' || this.players.indexOf(player) != this.currentPlayerIndex || player.hasDrawn) {
             return;
         }
 
