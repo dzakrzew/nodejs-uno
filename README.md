@@ -17,3 +17,6 @@ Finally, you can run it by command:
 node server.js
 ```
 ...and visit `front/index.html` wherever the file is.
+
+# Legal notice
+**UNO** is a trademark of MATTEL, INC. All product names, trademarks and registered trademarks are property of their respective owners. All company, product and service names used in this website are for identification and educational purposes only.
