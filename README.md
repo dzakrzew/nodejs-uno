@@ -1,6 +1,8 @@
 # nodejs-uno v0.9.0
 Uno card game based on NodeJS WebSocket server.
 
+![Screenshot](https://i.imgur.com/zR1EbbT.png)
+
 # Installation and startup
 ```
 git clone https://github.com/dominiol/nodejs-uno.git
@@ -14,3 +16,4 @@ Finally, you can run it by command:
 ```
 node server.js
 ```
+...and visit `front/index.html` wherever the file is.
