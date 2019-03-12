@@ -95,6 +95,11 @@ class GameServer {
         if (msg.action == 'draw-card') {
             this.rooms.drawCard(token);
         }
+
+        // skips turn
+        if (msg.action == 'skip-turn') {
+            this.rooms.skipTurn(token);
+        }
     }
 }
 

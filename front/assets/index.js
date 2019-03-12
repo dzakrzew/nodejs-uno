@@ -277,6 +277,14 @@ function unoBindEvents() {
         });
     });
 
+    $('button#game-skip-turn').click(function(e) {
+        e.preventDefault();
+
+        sendMessage({
+            action: 'skip-turn'
+        });
+    });
+
     $('button[data-op-button]').click(function() {
         var action = $(this).attr('data-op-button');
 

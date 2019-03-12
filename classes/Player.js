@@ -4,6 +4,7 @@ class Player {
         this.token = token;
         this.nick = nick;
         this.cards = [];
+        this.hasDrawn = false;
     }
 
     sendMessage(message) {

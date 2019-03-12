@@ -72,6 +72,14 @@ class RoomCollection {
             }
         }
     }
+
+    skipTurn(token) {
+        for (let roomId in this.rooms) {
+            if (this.rooms[roomId].hasPlayerWithToken(token)) {
+                this.rooms[roomId].skipTurn(token);
+            }
+        }
+    }
 }
 
 module.exports = RoomCollection;

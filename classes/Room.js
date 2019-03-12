@@ -303,14 +303,26 @@ class Room {
     }
 
     drawCard(token) {
-        if (this.gameState != 'PLAYING') {
+        let player = this.getPlayerWithToken(token);
+
+        if (this.gameState != 'PLAYING' || player.hasDrawn) {
             return;
         }
 
-        let player = this.getPlayerWithToken(token);
-
+        player.hasDrawn = true;
         player.addCards(this.getRandomCardsSet(1));
         this.updatePlayersCardsCount();
+    }
+
+    skipTurn(token) {
+        let player = this.getPlayerWithToken(token);
+
+        if (this.gameState != 'PLAYING' || this.players.indexOf(player) != this.currentPlayerIndex || player.hasDrawn == false) {
+            return;
+        }
+
+        player.hasDrawn = false;
+        this.updateTurn(1);
     }
 
     hasPlayerWithNick(nick) {
