@@ -259,8 +259,6 @@ class Room {
             currentTurnPlayerNick: this.players[this.currentPlayerIndex].nick
         });
 
-
-
         this.updatePlayersCardsCount();
     }
 
@@ -281,6 +279,8 @@ class Room {
             title: 'player-left',
             nick: playerNick
         });
+
+        this.updateTurn(0);
     }
 
     getPlayerWithToken(token) {
