@@ -273,6 +273,10 @@ class Room {
             }
         }
 
+        for (let i = 0; i < this.players[playerIndex].cards.length; i++) {
+            this.cardsStack.push(this.players[playerIndex].cards[i]);
+        }
+
         this.players.splice(playerIndex, 1);
 
         this.sendMessageToAll({

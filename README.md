@@ -9,7 +9,7 @@ git clone https://github.com/dzakrzew/nodejs-uno.git
 cd nodejs-uno
 npm install
 ```
-Then you have to change IP address or port on which server listens (default is `localhost:1337`) by modifying file `server.js` and `front/index.js`.
+Then you have to change IP address or port on which server listens (default is `localhost:1337`) by modifying file `server.js` and `front/assets/index.js`.
 Remember that `front/` is a separate directory which contains files to serve with another HTTP server – you can place it wherever you want.
 
 Finally, you can run it by command:
