@@ -5,7 +5,7 @@ Uno card game based on NodeJS WebSocket server.
 
 # Installation and startup
 ```
-git clone https://github.com/dominiol/nodejs-uno.git
+git clone https://github.com/dzakrzew/nodejs-uno.git
 cd nodejs-uno
 npm install
 ```
